@@ -110,7 +110,36 @@ describe( 'Testing Simple Statistics Block', function() {
         cy.get( '.statistic:nth-of-type(2) .label' ).should( 'have.text', value4 );
     } )
         
-    // test that you can edit the data in the simple stat block
+    it ( 'Tests that new data can be entered in edit view - ' + title1, function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '[aria-label="More options"]' ).click()
+        cy.get( 'button' ).contains( 'Attempt Block Recovery' ).click()
+        cy.focused().clear().type( value4 ).blur()
+        cy.get( '.editor-post-publish-button' ).click()
+    } )
+
+    it ( 'Tests that new stats can be added to existing block in edit view - ' + title1, function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '[aria-label="More options"]' ).click()
+        cy.get( 'button' ).contains( 'Attempt Block Recovery' ).click()
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics div:nth-child(2) .components-button.components-icon-button' ).click()
+        cy.get( '.statistic:nth-of-type(2) .value' ).type( value1 ).blur()
+        cy.get( '.editor-post-publish-button' ).click()
+    } )
+
+    it ( 'Tests that stats can be deleted from block in edit view - ' + title1, function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '[aria-label="More options"]' ).click()
+        cy.get( 'button' ).contains( 'Attempt Block Recovery' ).click()
+        cy.get( '.statistic:nth-of-type(2) .stat-edit-buttons .components-button' ).click()
+        cy.get( '.editor-post-publish-button' ).click()
+    } )
 
 
   } );
