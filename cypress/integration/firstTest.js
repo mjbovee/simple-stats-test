@@ -4,6 +4,9 @@ describe( 'Testing Simple Statistics Block', function() {
     const value2 = 'test label'
     const value3 = 'text in number field'
     const value4 = '123'
+    const title1 = 'single value stat block'
+    const title2 = 'no value stat block'
+    const title3 = 'mulit stat block'
     
     beforeEach( 'Logs in to wordpress', function() {
         cy.visit( baseURL + '/wp-login.php' )
@@ -16,7 +19,7 @@ describe( 'Testing Simple Statistics Block', function() {
     it( 'Adds a simple stat block with value', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
         cy.get( '[aria-label="Disable tips"]' ).click()
-        cy.get( '#post-title-0' ).type( 'single value stat block' ).blur()
+        cy.get( '#post-title-0' ).type( title1 ).blur()
         cy.get( '[aria-label="Add block"]:first' ).click()
         cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
         cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics .components-button' ).click()
@@ -31,7 +34,7 @@ describe( 'Testing Simple Statistics Block', function() {
     it ( 'Adds a simple stat block without values', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
         cy.get( '[aria-label="Disable tips"]' ).click()
-        cy.get( '#post-title-0' ).type( 'no value stat block' ).blur()
+        cy.get( '#post-title-0' ).type( title2 ).blur()
         cy.get( '[aria-label="Add block"]:first' ).click()
         cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
         cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics .components-button' ).click()
@@ -43,7 +46,7 @@ describe( 'Testing Simple Statistics Block', function() {
     it ( 'Adds a simple stat block with multiple values', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
         cy.get( '[aria-label="Disable tips"]' ).click()
-        cy.get( '#post-title-0' ).type( 'mulit stat block' ).blur()
+        cy.get( '#post-title-0' ).type( title3 ).blur()
         cy.get( '[aria-label="Add block"]:first' ).click()
         cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
         cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics .components-button' ).click()
@@ -58,12 +61,30 @@ describe( 'Testing Simple Statistics Block', function() {
         cy.get( '.editor-post-publish-button' ).click()
     } )
 
-    // it ( 'Tests that published values match input values', function() {
-    //     cy.visit( )
-    // } )
+    it ( 'Tests that published values match input values', function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="View “' + title1 + '”"]' ).click( {force: true} )
+        cy.get( '.simple-statistic-countup-counted' ).should( 'have.text', value1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") )
+        cy.get( '.label' ).should( 'have.text', value2 );
+    } )
+
+    it ( 'Tests that published values match input values', function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="View “' + title2 + '”"]' ).click( {force: true} )
+        cy.get( '.simple-statistic-countup-counted' ).should( 'have.text', 'NaN' ) 
+        cy.get( '.label' ).should( 'have.text', '' );
+    } )
+
+    it ( 'Tests that published values match input values', function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="View “' + title3 + '”"]' ).click( {force: true} )
+        cy.get( '.statistic:nth-of-type(1) .simple-statistic-countup-counted' ).should( 'have.text', value1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") )
+        cy.get( '.statistic:nth-of-type(1) .label' ).should( 'have.text', value2 );
+        cy.get( '.statistic:nth-of-type(2) .simple-statistic-countup-counted' ).should( 'have.text', 'NaN' )
+        cy.get( '.statistic:nth-of-type(2) .label' ).should( 'have.text', value4 );
+    } )
 
 
-    // test that the block appears with values
 
     // test that you can edit the data in the simple stat block
 
