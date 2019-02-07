@@ -7,6 +7,11 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
     const title1 = 'single value stat block'
     const title2 = 'no value stat block'
     const title3 = 'mulit stat block'
+
+    function deletePage(title) {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="Move “' + title + '” to the Trash"]' ).click( {force: true} )
+    }
     
     beforeEach( 'Logs in to wordpress', function() {
         cy.visit( baseURL + '/wp-login.php' )
@@ -108,6 +113,12 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.get( '.statistic:nth-of-type(1) .label' ).should( 'have.text', value2 );
         cy.get( '.statistic:nth-of-type(2) .simple-statistic-countup' ).should( 'have.attr', 'data-value', value3 ).should( 'have.text', '0' )
         cy.get( '.statistic:nth-of-type(2) .label' ).should( 'have.text', value4 );
+    } )
+
+    it ( 'Deletes the pages created by the test', function() {
+        deletePage(title1)
+        deletePage(title2)
+        deletePage(title3)
     } )
 
 
