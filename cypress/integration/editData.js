@@ -1,8 +1,8 @@
-describe( 'Adds test blocks, inputs data, and verifies that the data match across views', function() {
+describe( 'Adds test block, inputs data, and attempts to edit data', function() {
     const baseURL = 'http://wordpress.local/wordpress'
-    const value1 = 333
+    const value1 = '333'
     const value2 = 'edit me'
-    const value3 = 444
+    const value3 = '444'
     const title1 = 'edit data block'
     
     beforeEach( 'Logs in to wordpress', function() {
@@ -61,17 +61,33 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.wait(1000)
         cy.get( '.editor-post-publish-button' ).click()
     } )
+  
+    it ( 'Converts block to "classic" block and attempts edit', function() {
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '[aria-label="More options"]' ).click()
+        cy.get( 'button' ).contains( 'Convert to Classic Block' ).click()
+        cy.get( '.simple-statistic-countup' ).type( value3 )
+        cy.get( '.editor-post-publish-button' ).click()
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="View “' + title1 + '”"]' ).click( {force: true} )
+        cy.get( '.simple-statistic-countup-counted' ).should( 'have.attr', 'data-value', value1 )
+    } )
 
-    it ( 'Attempts to edit the "resolved" block using HTML', function() {
+    it ( 'Attempts to edit the "resolved" block using HTML and checks to see if the data match', function() {
         cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
         cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
         cy.get( '[aria-label="Disable tips"]' ).click()
         cy.get( 'button' ).contains( 'Resolve' ).click()
         cy.get( 'button' ).contains( 'Convert to Blocks' ).click()
-        cy.get( '.wp-block-html textarea' ).clear().type( '<div class="wp-block-cgb-block-gutenberg-simple-statistics"><div class="container"><div class="statistic"><div><div class="simple-statistic-countup" data-value="' + value1 + '" id="countup-27450">0</div></div><div class="label">' + value2 +'</div></div></div></div>' ).blur()
+        cy.get( '.wp-block-html textarea' ).clear().type( '<div class="wp-block-cgb-block-gutenberg-simple-statistics"><div class="container"><div class="statistic"><div><div class="simple-statistic-countup" data-value="' + value1 + '"id="countup-27450">0</div></div><div class="label">' + value2 +'</div></div></div></div>' ).blur()
         cy.wait(1000)
-        cy.get( '.editor-post-preview' ).click()
-        cy.get( '.simple-statistic-countup-counted' ).should( 'have.attr', 'data-value', value1)
+        cy.get( '.editor-post-publish-button' ).click()
+        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
+        cy.get( '[aria-label="View “' + title1 + '”"]' ).click( {force: true} )
+        cy.get( '.simple-statistic-countup-counted' ).should( 'have.attr', 'data-value', value1 )
+
     } )
 
 } )
