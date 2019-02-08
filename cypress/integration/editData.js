@@ -61,19 +61,6 @@ describe( 'Adds test block, inputs data, and attempts to edit data', function() 
         cy.wait(1000)
         cy.get( '.editor-post-publish-button' ).click()
     } )
-  
-    it ( 'Converts block to "classic" block and attempts edit', function() {
-        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
-        cy.get( '[aria-label="“' + title1 + '” (Edit)"]' ).click()
-        cy.get( '[aria-label="Disable tips"]' ).click()
-        cy.get( '[aria-label="More options"]' ).click()
-        cy.get( 'button' ).contains( 'Convert to Classic Block' ).click()
-        cy.get( '.simple-statistic-countup' ).clear().type( value1 )
-        cy.get( '.editor-post-publish-button' ).click()
-        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
-        cy.get( '[aria-label="View “' + title1 + '”"]' ).click( {force: true} )
-        cy.get( '.simple-statistic-countup-counted' ).should( 'have.attr', 'data-value', value1 )
-    } )
 
     it ( 'Attempts to edit the "resolved" block using HTML and checks to see if the data match', function() {
         cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )

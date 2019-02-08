@@ -1,7 +1,5 @@
 describe( 'Adds test blocks, adds content, verifies blocks retain content', function() {
     const baseURL = 'http://wordpress.local/wordpress'
-    const value1 = '1234'
-    const value2 = 'test label'
     const title1 = 'empty stat block'
     const title2 = 'single entry stat block'
     const title3 = 'multi (5+) entry stat block'
@@ -78,15 +76,5 @@ describe( 'Adds test blocks, adds content, verifies blocks retain content', func
             expect($div).to.have.length(6)
         } )
     } )
-
-    // it( 'Tries a loop', function() {
-    //     cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
-    //     cy.get( '[aria-label="Disable tips"]' ).click()
-    //     cy.get( '#post-title-0' ).type( title3 ).blur()
-    //     cy.get( '[aria-label="Add block"]:first' ).click()
-    //     cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
-    //     cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-    //     insertStatContent()
-    // } )
 
  } )
