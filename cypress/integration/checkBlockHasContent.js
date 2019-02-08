@@ -4,12 +4,7 @@ describe( 'Adds test blocks, adds content, verifies blocks retain content', func
     const value2 = 'test label'
     const title1 = 'empty stat block'
     const title2 = 'single entry stat block'
-    const title3 = 'multi (5) entry stat block'
-
-    function deletePage(title) {
-        cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
-        cy.get( '[aria-label="Move “' + title + '” to the Trash"]' ).click( {force: true} )
-    }
+    const title3 = 'multi (5+) entry stat block'
     
     beforeEach( 'Logs in to wordpress', function() {
         cy.visit( baseURL + '/wp-login.php' )
@@ -40,9 +35,12 @@ describe( 'Adds test blocks, adds content, verifies blocks retain content', func
         cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
             expect($div).to.have.descendants( '.statistic' )
         } )
+        cy.get( '.statistic' ).should(($div) => {
+            expect($div).to.have.length(1)
+        } )
     } )
 
-    it( 'Adds a block with many entries', function() {
+    it( 'Adds a block with five entries', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
         cy.get( '[aria-label="Disable tips"]' ).click()
         cy.get( '#post-title-0' ).type( title3 ).blur()
@@ -56,6 +54,39 @@ describe( 'Adds test blocks, adds content, verifies blocks retain content', func
         cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
             expect($div).to.have.descendants( '.statistic' )
         } )
+        cy.get( '.statistic' ).should(($div) => {
+            expect($div).to.have.length(5)
+        } )
     } )
+
+    it( 'Adds a block with six entries', function() {
+        cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '#post-title-0' ).type( title3 ).blur()
+        cy.get( '[aria-label="Add block"]:first' ).click()
+        cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
+            expect($div).to.have.descendants( '.statistic' )
+        } )
+        cy.get( '.statistic' ).should(($div) => {
+            expect($div).to.have.length(6)
+        } )
+    } )
+
+    // it( 'Tries a loop', function() {
+    //     cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
+    //     cy.get( '[aria-label="Disable tips"]' ).click()
+    //     cy.get( '#post-title-0' ).type( title3 ).blur()
+    //     cy.get( '[aria-label="Add block"]:first' ).click()
+    //     cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+    //     cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+    //     insertStatContent()
+    // } )
 
  } )
