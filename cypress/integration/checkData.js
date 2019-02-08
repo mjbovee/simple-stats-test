@@ -6,7 +6,7 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
     const value4 = '123'
     const title1 = 'single value stat block'
     const title2 = 'no value stat block'
-    const title3 = 'mulit stat block'
+    const title3 = 'two value stat block'
 
     function deletePage(title) {
         cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
@@ -48,7 +48,7 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.get( '.editor-post-publish-button' ).click()
     } )
 
-    it ( 'Adds a simple stat block with multiple values', function() {
+    it ( 'Adds a simple stat block with two values', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
         cy.get( '[aria-label="Disable tips"]' ).click()
         cy.get( '#post-title-0' ).type( title3 ).blur()
@@ -64,6 +64,16 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.get( '.editor-post-publish-panel__toggle' ).click()
         cy.wait(1000)
         cy.get( '.editor-post-publish-button' ).click()
+    } )
+
+    it ( 'Adds a block with multiple values', function() {
+        cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '#post-title-0' ).type( title3 ).blur()
+        cy.get( '[aria-label="Add block"]:first' ).click()
+        cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics .components-button' ).click()
+        
     } )
 
     it ( 'Tests that published values match input values - ' + title1, function() {
