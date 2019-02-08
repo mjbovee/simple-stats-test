@@ -1,10 +1,10 @@
-describe( 'Adds test blocks, inputs data, and verifies that the data match across views', function() {
+describe( 'Adds test blocks, adds content, verifies blocks retain content', function() {
     const baseURL = 'http://wordpress.local/wordpress'
     const value1 = '1234'
     const value2 = 'test label'
     const title1 = 'empty stat block'
     const title2 = 'single entry stat block'
-    const title3 = 'multi (5+) entry stat block'
+    const title3 = 'multi (5) entry stat block'
 
     function deletePage(title) {
         cy.visit( baseURL + '/wp-admin/edit.php?post_type=page' )
@@ -19,25 +19,28 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.get( '#wp-submit' ).click()
     } )
 
-    // it( 'Adds a block with no entries', function() {
-    //     cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
-    //     cy.get( '[aria-label="Disable tips"]' ).click()
-    //     cy.get( '#post-title-0' ).type( title1 ).blur()
-    //     cy.get( '[aria-label="Add block"]:first' ).click()
-    //     cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+    it( 'Adds a block with no entries', function() {
+        cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '#post-title-0' ).type( title1 ).blur()
+        cy.get( '[aria-label="Add block"]:first' ).click()
+        cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
+            expect($div).not.to.have.descendants( '.statistic' )
+        } )
+    } )
 
-    // } )
-
-    // it( 'Adds a block with a single entry', function() {
-    //     cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
-    //     cy.get( '[aria-label="Disable tips"]' ).click()
-    //     cy.get( '#post-title-0' ).type( title2 ).blur()
-    //     cy.get( '[aria-label="Add block"]:first' ).click()
-    //     cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
-    //     cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics .components-button' ).click()
-    //     cy.get( '.statistic textarea.value').type(value1)
-    //     cy.get( '.statistic textarea.label').type(value2).blur()
-    // } )
+    it( 'Adds a block with a single entry', function() {
+        cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
+        cy.get( '[aria-label="Disable tips"]' ).click()
+        cy.get( '#post-title-0' ).type( title2 ).blur()
+        cy.get( '[aria-label="Add block"]:first' ).click()
+        cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
+        cy.get( 'button' ).contains( 'Add Statistic:' ).click()
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
+            expect($div).to.have.descendants( '.statistic' )
+        } )
+    } )
 
     it( 'Adds a block with many entries', function() {
         cy.visit( baseURL + '/wp-admin/post-new.php?post_type=page' )
@@ -46,20 +49,13 @@ describe( 'Adds test blocks, inputs data, and verifies that the data match acros
         cy.get( '[aria-label="Add block"]:first' ).click()
         cy.get( '.editor-block-list-item-cgb-block-gutenberg-simple-statistics' ).click()
         cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-        cy.get( '.statistic textarea.value').type(value1)
-        cy.get( '.statistic textarea.label').type(value2).blur()
         cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-        cy.get( '.statistic:nth-of-type(2) textarea.value').type(value1)
-        cy.get( '.statistic:nth-of-type(2) textarea.label').type(value2).blur()
         cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-        cy.get( '.statistic:nth-of-type(3) textarea.value').type(value1)
-        cy.get( '.statistic:nth-of-type(3) textarea.label').type(value2).blur()
         cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-        cy.get( '.statistic:nth-of-type(4) textarea.value').type(value1)
-        cy.get( '.statistic:nth-of-type(4) textarea.label').type(value2).blur()
         cy.get( 'button' ).contains( 'Add Statistic:' ).click()
-        cy.get( '.statistic:nth-of-type(5) textarea.value').type(value1)
-        cy.get( '.statistic:nth-of-type(5) textarea.label').type(value2).blur()   
+        cy.get( '.wp-block-cgb-block-gutenberg-simple-statistics' ).should(($div) => {
+            expect($div).to.have.descendants( '.statistic' )
+        } )
     } )
 
  } )
